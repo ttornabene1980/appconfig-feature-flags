@@ -6,7 +6,12 @@ import "sst"
 export {}
 declare module "sst" {
   export interface Resource {
-    "MyWeb": {
+    "api": {
+      "name": string
+      "type": "sst.aws.Function"
+      "url": string
+    }
+    "appconfig-ff": {
       "type": "sst.aws.Nextjs"
       "url": string
     }

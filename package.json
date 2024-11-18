@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@aws-sdk/client-appconfig": "^3.693.0",
     "next": "15.0.3",
     "prettier": "^3.3.3",
     "react": "19.0.0-rc-66855b96-20241106",
@@ -16,6 +17,7 @@
     "sst": "3.3.22"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
