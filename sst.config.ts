@@ -25,6 +25,62 @@ export default $config({
       description: 'AppConfig Configuration Profile',
       name: 'appconfig-profile',
       locationUri: 'hosted',
+      type: 'AWS.AppConfig.FeatureFlags',
+    });
+
+    const configVersion = new aws.appconfig.HostedConfigurationVersion('appconfig-flag', {
+      applicationId: appConfig.id,
+      configurationProfileId: appConfigProfile.configurationProfileId,
+      description: 'Feature Flag Configuration',
+      contentType: 'application/json',
+      content: JSON.stringify({
+        flags: {
+          showModal: {
+            name: 'showModal',
+            _deprecation: {
+              status: 'planned',
+            },
+          },
+          modalContents: {
+            name: 'modalContents',
+            attributes: {
+              title: {
+                constraints: {
+                  type: 'string',
+                  required: true,
+                },
+              },
+              text: {
+                constraints: {
+                  type: 'string',
+                  required: true,
+                },
+              },
+            },
+          },
+        },
+        values: {
+          showModal: {
+            enabled: 'true',
+          },
+          modalContents: {
+            enabled: 'true',
+            title: 'This is a nice title! 🎉',
+            text: 'This is the text for the modal. 🚀',
+          },
+        },
+        version: '1',
+      }),
+    });
+
+    new aws.appconfig.DeploymentStrategy('appconfig-deployment-strategy', {
+      name: 'appconfig-deployment-strategy',
+      description: 'Deployment Strategy',
+      deploymentDurationInMinutes: 0,
+      finalBakeTimeInMinutes: 1,
+      growthFactor: 100,
+      growthType: 'LINEAR',
+      replicateTo: 'NONE',
     });
 
     const api = new sst.aws.Function('api', {
@@ -32,8 +88,9 @@ export default $config({
       url: true,
       environment: {
         APPCONFIG_APPLICATION_ID: appConfig.id,
-        APPCONFIG_ENVIRONMENT_ID: appConfigEnv.id,
-        APPCONFIG_CONFIGURATION_PROFILE_ID: appConfigProfile.id,
+        APPCONFIG_ENVIRONMENT_ID: appConfigEnv.environmentId,
+        APPCONFIG_CONFIGURATION_PROFILE_ID: appConfigProfile.configurationProfileId,
+        APPCONFIG_CONFIGURATION_VERSION: `${configVersion.versionNumber}`,
       },
       permissions: [{ actions: ['appconfig:*'], resources: ['*'] }],
     });
