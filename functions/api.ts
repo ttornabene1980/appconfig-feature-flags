@@ -5,6 +5,8 @@ import {
 } from '@aws-sdk/client-appconfigdata';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 
+const awsRegion = process.env.AWS_REGION;
+
 interface FeatureFlag {
   showModal: boolean;
   modalContents: {
@@ -56,6 +58,6 @@ export const handler = async (req: APIGatewayProxyEventV2) => {
   const featureFlag = await getFeatureFlagConfiguration();
   return {
     statusCode: 200,
-    body: JSON.stringify({ featureFlag }),
+    body: JSON.stringify({ featureFlag, awsRegion, ApplicationIdentifier, EnvironmentIdentifier }),
   };
 };
