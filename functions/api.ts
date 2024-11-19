@@ -58,6 +58,6 @@ export const handler = async (req: APIGatewayProxyEventV2) => {
   const featureFlag = await getFeatureFlagConfiguration();
   return {
     statusCode: 200,
-    body: JSON.stringify({ featureFlag, awsRegion, ApplicationIdentifier, EnvironmentIdentifier }),
+    body: JSON.stringify({ featureFlag, awsRegion, ApplicationIdentifier, EnvironmentIdentifier, ConfigurationProfileIdentifier }),
   };
 };

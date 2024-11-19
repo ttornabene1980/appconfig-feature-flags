@@ -3,14 +3,18 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const getAppConfigUrl = (config: ConfigurationResponse) =>
+const appConfigDeployments = (config: ConfigurationResponse) =>
   `https://${config.awsRegion}.console.aws.amazon.com/systems-manager/appconfig/applications/${config.ApplicationIdentifier}/environments/${config.EnvironmentIdentifier}/?region=${config.awsRegion}`;
+
+const appConfigFeatureFlags = (config: ConfigurationResponse) =>
+  `https://${config.awsRegion}.console.aws.amazon.com/systems-manager/appconfig/applications/${config.ApplicationIdentifier}/featureflags/${config.ConfigurationProfileIdentifier}/versions?region=${config.awsRegion}`;
 
 interface ConfigurationResponse {
   featureFlag: FeatureFlag;
   awsRegion: string;
   ApplicationIdentifier: string;
   EnvironmentIdentifier: string;
+  ConfigurationProfileIdentifier: string;
 }
 
 interface FeatureFlag {
@@ -60,14 +64,24 @@ export default function Home() {
         </>
       )}
       {configuration && (
-        <a
-          href={getAppConfigUrl(configuration)}
-          target="_blank"
-          className="mt-16 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          rel="noopener noreferrer"
-        >
-          Manage AWS AppConfig
-        </a>
+        <div className="mt-8 mb-8">
+          <a
+            href={appConfigDeployments(configuration)}
+            target="_blank"
+            className="mt-16 mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            rel="noopener noreferrer"
+          >
+            Show Deployments 🚀
+          </a>
+          <a
+            href={appConfigFeatureFlags(configuration)}
+            target="_blank"
+            className="mt-16 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            rel="noopener noreferrer"
+          >
+            Update Feature Flags 🚩
+          </a>
+        </div>
       )}
     </div>
   );
