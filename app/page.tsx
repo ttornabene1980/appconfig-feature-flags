@@ -18,8 +18,11 @@ interface ConfigurationResponse {
 }
 
 interface FeatureFlag {
-  showModal: boolean;
+  showModal: {
+    enabled: boolean;
+  };
   modalContents: {
+    enabled: boolean;
     title: string;
     text: string;
   };
@@ -45,24 +48,20 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <Image src="/logo.png" alt="AppConfig Logo" width={100} height={100} />
-      <h1 className="text-4xl font-bold mb-4">AWS AppConfig Feature Flags</h1>
-      {isLoading ? (
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      ) : (
-        <>
-          {configuration?.featureFlag?.showModal && (
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-bold mb-4">
-                {configuration.featureFlag?.modalContents.title}
-              </h2>
-              <p>{configuration.featureFlag?.modalContents.text}</p>
-            </div>
-          )}
-          {!configuration?.featureFlag?.showModal && <p>Feature Flag is disabled</p>}
-        </>
-      )}
+    <div className="flex flex-col items-center h-screen bg-gray-100">
+      <div className="mt-32 relative w-32 h-32 rounded-full overflow-hidden">
+        <Image
+          src="/logo.png"
+          alt="AppConfig Logo"
+          width={100}
+          height={100}
+          className="object-cover w-full h-full transition-all duration-500 ease-in-out transform hover:scale-110"
+        />
+      </div>
+      <h1 className="text-4xl font-bold my-8 text-[#C71D60]">AWS AppConfig Feature Flags</h1>
+      <p className="text-gray-600 mb-8">
+        This is an example application to learn about AppConfig feature flags.
+      </p>
       {configuration && (
         <div className="mt-8 mb-8">
           <a
@@ -82,6 +81,26 @@ export default function Home() {
             Update Feature Flags 🚩
           </a>
         </div>
+      )}
+      {isLoading ? (
+        <div className="animate-spin rounded-full mt-16 h-32 w-32 border-b-2 border-gray-900"></div>
+      ) : (
+        <>
+          {configuration?.featureFlag?.showModal?.enabled && (
+            <div className="bg-white p-8 rounded-lg shadow-lg">
+              <h2 className="text-2xl font-bold mb-4">
+                {configuration.featureFlag?.modalContents.title}
+              </h2>
+              <p>{configuration.featureFlag?.modalContents.text}</p>
+            </div>
+          )}
+          {!configuration?.featureFlag?.showModal?.enabled && (
+            <p className="text-gray-600">Feature Flag is disabled 😊</p>
+          )}
+          {!configuration?.featureFlag?.showModal && (
+            <p className="text-gray-600">Feature Flag is disabled</p>
+          )}
+        </>
       )}
     </div>
   );
