@@ -10,7 +10,7 @@ export default $config({
   },
   async run() {
     const appConfig = new aws.appconfig.Application('appconfig', {
-      name: 'awsfundamentals',
+      name: `${$app.stage}-awsfundamentals`,
       description: 'AppConfig Application',
     });
 
@@ -28,7 +28,7 @@ export default $config({
       type: 'AWS.AppConfig.FeatureFlags',
     });
 
-    const configVersion = new aws.appconfig.HostedConfigurationVersion('appconfig-flag', {
+    new aws.appconfig.HostedConfigurationVersion('appconfig-flag', {
       applicationId: appConfig.id,
       configurationProfileId: appConfigProfile.configurationProfileId,
       description: 'Feature Flag Configuration',
@@ -87,12 +87,16 @@ export default $config({
       handler: 'functions/api.handler',
       url: true,
       environment: {
+        IS_LOCAL: `${$dev}`,
         APPCONFIG_APPLICATION_ID: appConfig.id,
         APPCONFIG_ENVIRONMENT_ID: appConfigEnv.environmentId,
         APPCONFIG_CONFIGURATION_PROFILE_ID: appConfigProfile.configurationProfileId,
-        APPCONFIG_CONFIGURATION_VERSION: `${configVersion.versionNumber}`,
+        APPCONFIG_APPLICATION_NAME: appConfig.name,
+        APPCONFIG_ENVIRONMENT_NAME: appConfigEnv.name,
+        APPCONFIG_CONFIGURATION_PROFILE_NAME: appConfigProfile.name,
       },
       permissions: [{ actions: ['appconfig:*'], resources: ['*'] }],
+      layers: ['arn:aws:lambda:eu-west-1:434848589818:layer:AWS-AppConfig-Extension:159'],
     });
 
     new sst.aws.Nextjs('appconfig-ff', {
