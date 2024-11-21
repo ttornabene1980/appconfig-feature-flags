@@ -67,7 +67,16 @@ export default function Home() {
         />
       </div>
       <h1 className="text-4xl font-bold my-8 text-[#C71D60]">AWS AppConfig Feature Flags</h1>
-      <p className="text-gray-600 mb-8">
+        <div className="flex justify-center">
+          <Image
+            src="/demo.gif"
+            alt="Demo GIF"
+            width={600}
+            height={400}
+            className="rounded-lg shadow-lg"
+          />
+        </div>
+      <p className="text-gray-600 my-4">
         This is an example application to learn about AppConfig feature flags.
       </p>
       {configuration && (
