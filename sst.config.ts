@@ -35,14 +35,8 @@ export default $config({
       contentType: 'application/json',
       content: JSON.stringify({
         flags: {
-          showModal: {
-            name: 'showModal',
-            _deprecation: {
-              status: 'planned',
-            },
-          },
-          modalContents: {
-            name: 'modalContents',
+          modal: {
+            name: 'modal',
             attributes: {
               title: {
                 constraints: {
@@ -60,11 +54,8 @@ export default $config({
           },
         },
         values: {
-          showModal: {
-            enabled: 'true',
-          },
-          modalContents: {
-            enabled: 'true',
+          modal: {
+            enabled: true,
             title: 'This is a nice title! 🎉',
             text: 'This is the text for the modal. 🚀',
           },

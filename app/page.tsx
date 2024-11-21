@@ -18,10 +18,7 @@ interface ConfigurationResponse {
 }
 
 interface FeatureFlag {
-  showModal: {
-    enabled: boolean;
-  };
-  modalContents: {
+  modal: {
     enabled: boolean;
     title: string;
     text: string;
@@ -31,6 +28,7 @@ interface FeatureFlag {
 export default function Home() {
   const [configuration, setConfiguration] = useState<ConfigurationResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [intervalId, setIntervalId] = useState<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +42,17 @@ export default function Home() {
         setIsLoading(false);
       }
     };
+
     fetchData();
+
+    const id = setInterval(fetchData, 3000);
+    setIntervalId(id);
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, []);
 
   return (
@@ -86,19 +94,14 @@ export default function Home() {
         <div className="animate-spin rounded-full mt-16 h-32 w-32 border-b-2 border-gray-900"></div>
       ) : (
         <>
-          {configuration?.featureFlag?.showModal?.enabled && (
+          {configuration?.featureFlag?.modal?.enabled && (
             <div className="bg-white p-8 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-bold mb-4">
-                {configuration.featureFlag?.modalContents.title}
-              </h2>
-              <p>{configuration.featureFlag?.modalContents.text}</p>
+              <h2 className="text-2xl font-bold mb-4">{configuration.featureFlag?.modal.title}</h2>
+              <p>{configuration.featureFlag?.modal.text}</p>
             </div>
           )}
-          {!configuration?.featureFlag?.showModal?.enabled && (
+          {!configuration?.featureFlag?.modal?.enabled && (
             <p className="text-gray-600">Feature Flag is disabled 😊</p>
-          )}
-          {!configuration?.featureFlag?.showModal && (
-            <p className="text-gray-600">Feature Flag is disabled</p>
           )}
         </>
       )}
