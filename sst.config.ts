@@ -9,6 +9,53 @@ export default $config({
     };
   },
   async run() {
+    const testingApi = new sst.aws.Function('testing-api', {
+      handler: 'functions/testing.handler',
+      url: true,
+    });
+
+    const cwAlarm = new aws.cloudwatch.MetricAlarm('testing-api-error-alarm', {
+      name: 'testing-api-error-alarm',
+      comparisonOperator: 'GreaterThanOrEqualToThreshold',
+      evaluationPeriods: 1,
+      metricName: 'Errors',
+      namespace: 'AWS/Lambda',
+      period: 60,
+      statistic: 'Sum',
+      threshold: 1,
+      datapointsToAlarm: 1,
+      treatMissingData: 'notBreaching',
+      dimensions: { FunctionName: testingApi.name },
+    });
+
+    const cwPolicy = new aws.iam.Policy('cloudwatch-policy', {
+      policy: {
+        Version: '2012-10-17',
+        Statement: [
+          {
+            Effect: 'Allow',
+            Action: ['cloudwatch:DescribeAlarms', 'cloudwatch:GetMetricData'],
+            Resource: '*',
+          },
+        ],
+      },
+    });
+    const cwRole = new aws.iam.Role('cloudwatch-role', {
+      assumeRolePolicy: {
+        Version: '2012-10-17',
+        Statement: [
+          {
+            Effect: 'Allow',
+            Principal: {
+              Service: 'lambda.amazonaws.com',
+            },
+            Action: 'sts:AssumeRole',
+          },
+        ],
+      },
+      inlinePolicies: [cwPolicy],
+    });
+
     const appConfig = new aws.appconfig.Application('appconfig', {
       name: `${$app.stage}-awsfundamentals`,
       description: 'AppConfig Application',
@@ -18,6 +65,12 @@ export default $config({
       name: 'appconfig-env',
       description: 'AppConfig Environment',
       applicationId: appConfig.id,
+      monitors: [
+        {
+          alarmRoleArn: cwRole.arn,
+          alarmArn: cwAlarm.arn,
+        },
+      ],
     });
 
     const appConfigProfile = new aws.appconfig.ConfigurationProfile('appconfig-profile', {
@@ -93,6 +146,7 @@ export default $config({
     new sst.aws.Nextjs('appconfig-ff', {
       environment: {
         NEXT_PUBLIC_API_URL: api.url,
+        NEXT_PUBLIC_TESTING_API_URL: testingApi.url,
       },
     });
   },

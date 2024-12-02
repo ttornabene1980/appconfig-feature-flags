@@ -87,6 +87,7 @@ const getFeatureFlag = () => (isLocal ? getFeatureFlagLocally() : getFeatureFlag
 
 export const handler = async (_req: APIGatewayProxyEventV2) => {
   const featureFlag = await getFeatureFlag();
+  
   return {
     statusCode: 200,
     body: JSON.stringify({

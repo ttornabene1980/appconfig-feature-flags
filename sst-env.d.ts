@@ -15,5 +15,10 @@ declare module "sst" {
       "type": "sst.aws.Nextjs"
       "url": string
     }
+    "testing-api": {
+      "name": string
+      "type": "sst.aws.Function"
+      "url": string
+    }
   }
 }
