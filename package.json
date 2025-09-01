@@ -11,11 +11,12 @@
   "dependencies": {
     "@aws-sdk/client-appconfig": "^3.693.0",
     "@aws-sdk/client-appconfigdata": "^3.693.0",
+    "lucide-react": "^0.542.0",
     "next": "15.0.3",
     "prettier": "^3.3.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
-    "sst": "3.3.22"
+    "sst": "^3.17.12"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.145",

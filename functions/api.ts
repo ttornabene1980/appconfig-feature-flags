@@ -82,7 +82,7 @@ async function getFeatureFlagLive(): Promise<FeatureFlag | undefined> {
   const data = (await response?.json()) as FeatureFlag;
   return data;
 }
-
+ 
 const getFeatureFlag = () => (isLocal ? getFeatureFlagLocally() : getFeatureFlagLive());
 
 export const handler = async (_req: APIGatewayProxyEventV2) => {

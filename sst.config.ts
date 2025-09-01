@@ -14,6 +14,11 @@ export default $config({
       url: true,
     });
 
+     const tinoApi = new sst.aws.Function('tino-api', {
+      handler: 'functions/tino.handler',
+      url: true,
+    });
+
     const cwAlarm = new aws.cloudwatch.MetricAlarm('testing-api-error-alarm', {
       name: 'testing-api-error-alarm',
       comparisonOperator: 'GreaterThanOrEqualToThreshold',
@@ -27,6 +32,21 @@ export default $config({
       treatMissingData: 'notBreaching',
       dimensions: { FunctionName: testingApi.name },
     });
+
+     const cwAlarmTino = new aws.cloudwatch.MetricAlarm('tino-api-error-alarm', {
+      name: 'tino-api-error-alarm',
+      comparisonOperator: 'GreaterThanOrEqualToThreshold',
+      evaluationPeriods: 1,
+      metricName: 'Errors',
+      namespace: 'AWS/Lambda',
+      period: 60,
+      statistic: 'Sum',
+      threshold: 1,
+      datapointsToAlarm: 1,
+      treatMissingData: 'notBreaching',
+      dimensions: { FunctionName: tinoApi.name },
+    });
+
 
     const cwPolicy = new aws.iam.Policy('cloudwatch-policy', {
       policy: {
@@ -69,6 +89,10 @@ export default $config({
         {
           alarmRoleArn: cwRole.arn,
           alarmArn: cwAlarm.arn,
+        },
+         {
+          alarmRoleArn: cwRole.arn,
+          alarmArn: cwAlarmTino.arn,
         },
       ],
     });
@@ -147,6 +171,7 @@ export default $config({
       environment: {
         NEXT_PUBLIC_API_URL: api.url,
         NEXT_PUBLIC_TESTING_API_URL: testingApi.url,
+         NEXT_PUBLIC_TINO_API_URL: tinoApi.url
       },
     });
   },

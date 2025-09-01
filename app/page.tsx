@@ -33,12 +33,13 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(`Fetching data from API...${process.env.NEXT_PUBLIC_API_URL!}`);
         const response = await fetch(process.env.NEXT_PUBLIC_API_URL!);
         const data = await response.json();
         setConfiguration(data);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // console.error('Error fetching data:', error);
         setIsLoading(false);
       }
     };
@@ -71,13 +72,13 @@ export default function Home() {
           <Image
             src="/demo.gif"
             alt="Demo GIF"
-            width={600}
+            width={600}q
             height={400}
             className="rounded-lg shadow-lg"
           />
         </div>
       <p className="text-gray-600 my-4">
-        This is an example application to learn about AppConfig feature flags.
+      This is an example application to learn about AppConfig feature flags.
       </p>
       {configuration && (
         <div className="mt-8 mb-8">
